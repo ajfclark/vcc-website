@@ -114,16 +114,16 @@ function get_query($selection) {
 
 
 // DB Config
-$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD)
+$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
     or die('Could not connect: ' . mysql_error());
-mysql_select_db(DB_NAME) or die('Could not select database');
+//mysql_select_db(DB_NAME) or die('Could not select database');
 
 // Set the content type
 header('Content-Type: application/xml');
 
 // Print RSS header
 echo "<?xml version=\"1.0\"?>\n";
-echo "<rss version=\"2.0\" xmlns:atom=\"https://www.w3.org/2005/Atom\">\n";
+echo "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 echo "<channel>\n";
 echo "<title>VCC Events</title>\n";
 echo "<description>The Victorian Climbing Club runs a variety of climbing trips to many different locations, primarily around Victoria but with many trips further abroad.  Other more social events like movie nights and the annual dinner will also appear here as well as details of CliffCare working bees.  Subscribe to stay up to date with the latest VCC events.</description>\n";
@@ -133,19 +133,19 @@ echo "<atom:link href=\"https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'
 // Records today or in the future
 $date = date("Ymd");
 $query = get_query(">= '$date'");
-$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$result = mysqli_query($link, $query) or die('Query failed: ' . mysqli_error($link));
 
 // Process each record returned
-while($record = mysql_fetch_array($result, MYSQL_ASSOC)) {
+while($record = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 	print_record($record);
 }
 
 // Records TBA dates
 $query = get_query("= ''");
-$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$result = mysqli_query($link, $query) or die('Query failed: ' . mysqli_error($link));
 
 // Process each record returned
-while($record = mysql_fetch_array($result, MYSQL_ASSOC)) {
+while($record = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 	print_record($record);
 }
 
@@ -153,10 +153,10 @@ echo "</channel>\n";
 echo "</rss>\n";
 
 // Free resultset
-mysql_free_result($result);
+mysqli_free_result($result);
 
 // Closing connection
-mysql_close($link);
+mysqli_close($link);
 
 // We're done
 ?>

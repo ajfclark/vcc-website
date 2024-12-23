@@ -174,3 +174,14 @@ function remove_unused_admin_bar_items($wp_admin_bar) {
   $wp_admin_bar->remove_node('new-content'); // New Content
 }
 add_action('admin_bar_menu', 'remove_unused_admin_bar_items', 999);
+
+/**
+ * Sets up the API key for the Google Maps custom field
+ */
+function my_acf_google_map_api( $api ){
+	include ("google_api_key.php");
+    $api['key'] = $google_api_key;
+    return $api;
+}
+add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
+

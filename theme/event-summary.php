@@ -10,7 +10,15 @@
   <a class="event-summary" href="<?php echo esc_url(get_permalink()) ?>">
     <header class="event-summary__header">
       <?php $location = get_field('location') ?>
-      <img class="event-summary__map" src="https://maps.googleapis.com/maps/api/staticmap?center=<?php echo $location['lat']; ?>,<?php echo $location['lng']; ?>&zoom=11&size=125x125&maptype=roadmap&markers=color:red%7C<?php echo $location['lat']; ?>,<?php echo $location['lng']; ?>" />
+    <?php
+      include_once("urlSign.php");
+      include_once("google_api_key.php");
+
+      $url="https://maps.googleapis.com/maps/api/staticmap?center=" . $location['lat'] . "," . $location['lng'] . "&zoom=11&size=125x125&maptype=roadmap&markers=color:red%7C" . $location['lat'] . "," . $location['lng'];
+      $url = signUrl($url . "&key=" . $google_api_key2, '_h9djfVpH3b6nRMhVsdnqES7XPQ=');
+?>
+    <img class="event-summary__map" src="<?php echo $url; ?>" />
+
       <h1 class="event-summary__title"><?php the_title(); ?></h1>
       <h2 class="event-summary__location-and-date">
         <span class="event-summary__location">

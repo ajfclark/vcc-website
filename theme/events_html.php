@@ -110,9 +110,9 @@ function get_query($selection) {
 
 
 // DB Config
-$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD)
-    or die('Could not connect: ' . mysql_error());
-mysql_select_db(DB_NAME) or die('Could not select database');
+$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD)
+    or die('Could not connect: ' . mysqli_error());
+mysqli_select_db($link, DB_NAME) or die('Could not select database');
 
 // Set the content type
 header('Content-Type: text/html');
@@ -127,19 +127,19 @@ echo "<body>\n";
 // Records today or in the future
 $date = date("Ymd");
 $query = get_query(">= '$date'");
-$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$result = mysqli_query($link, $query) or die('Query failed: ' . mysqli_error($link));
 
 // Process each record returned
-while($record = mysql_fetch_array($result, MYSQL_ASSOC)) {
+while($record = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 	print_record($record);
 }
 
 // Records TBA dates
 $query = get_query("= ''");
-$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$result = mysqli_query($link, $query) or die('Query failed: ' . mysqli_error($link));
 
 // Process each record returned
-while($record = mysql_fetch_array($result, MYSQL_ASSOC)) {
+while($record = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 	print_record($record);
 }
 
@@ -147,10 +147,10 @@ echo "</body>\n";
 echo "</html>\n";
 
 // Free resultset
-mysql_free_result($result);
+mysqli_free_result($result);
 
 // Closing connection
-mysql_close($link);
+mysqli_close($link);
 
 // We're done
 ?>
